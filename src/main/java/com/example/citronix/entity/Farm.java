@@ -1,4 +1,4 @@
-package com.example.citronix.entity.enums;
+package com.example.citronix.entity;
 
 public class Farm {
 }
