@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/vi")
 @RequiredArgsConstructor
@@ -30,4 +32,20 @@ public class FarmController {
         Farm farm = farmService.update(farmUpdateDTO, id);
         return ResponseEntity.status(HttpStatus.OK).body(farmMapper.toFarmVm(farm));
     }
+    @DeleteMapping("/farms/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id){
+        farmService.delete(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Farm with ID " + id + " deleted successfully.");
+    }
+    @GetMapping("/farms/{id}")
+    public ResponseEntity<FarmVm> findById(@PathVariable Long id){
+        Farm farm = farmService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(farmMapper.toFarmVm(farm));
+    }
+    @GetMapping("/farms")
+    public ResponseEntity<List<FarmVm>> findAll(){
+        List<Farm> farms = farmService.findAll();
+        return ResponseEntity.status(HttpStatus.OK).body(farms.stream().map(farmMapper::toFarmVm).collect(Collectors.toList()));
+    }
+
 }
