@@ -11,6 +11,8 @@ import com.example.citronix.service.FarmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FarmServiceImpl implements FarmService {
@@ -35,4 +37,23 @@ public class FarmServiceImpl implements FarmService {
         Farm newFarm = farmMapper.partialUpdate(farmUpdateDTO, existingFarm);
         return farmRepository.save(newFarm);
     }
+
+    @Override
+    public void delete(Long id) {
+        Farm farm =  farmRepository.findById(id)
+                .orElseThrow(() -> new FarmNotFoundException("Fame with id " + id + " not found"));
+        farmRepository.delete(farm);;
+    }
+
+    @Override
+    public Farm findById(Long id) {
+        return farmRepository.findById(id)
+                .orElseThrow(() -> new FarmNotFoundException("Fame with id " + id + " not found"));
+    }
+
+    @Override
+    public List<Farm> findAll() {
+        return farmRepository.findAll();
+    }
+
 }
