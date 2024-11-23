@@ -1,8 +1,10 @@
 package com.example.citronix.service.implementation;
 
 import com.example.citronix.dto.field.FieldCreateDTO;
+import com.example.citronix.dto.field.FieldUpdateDTO;
 import com.example.citronix.entity.Farm;
 import com.example.citronix.entity.Field;
+import com.example.citronix.exception.Field.FieldNotFoundException;
 import com.example.citronix.helpers.FieldValidationHelper;
 import com.example.citronix.mapper.FieldMapper;
 import com.example.citronix.repository.FieldRepository;
@@ -31,5 +33,23 @@ public class FieldServiceImpl implements FieldService {
         field.setFarm(farm);
 
         return fieldRepository.save(field);
+    }
+
+    @Override
+    public Field findById(Long id) {
+        return fieldRepository.findById(id)
+                .orElseThrow(() -> new FieldNotFoundException("Field with id : " + id + " not found"));
+    }
+
+    @Override
+    public Field update(FieldUpdateDTO fieldUpdateDTO, Long id) {
+        return null;
+    }
+
+    @Override
+    public void delete(Long id) {
+        Field field = findById(id);
+        fieldRepository.delete(field);
+
     }
 }

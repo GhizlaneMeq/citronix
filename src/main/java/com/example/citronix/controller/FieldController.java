@@ -9,11 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -28,5 +24,17 @@ public class FieldController {
         Field field = fieldService.save(fieldCreateDTO);
         FieldVm fieldVm = fieldMapper.toFieldVm(field);
         return ResponseEntity.status(HttpStatus.CREATED).body(fieldVm);
+    }
+
+    @GetMapping(value ="/fields/{id}")
+    public ResponseEntity<FieldVm> findById(@PathVariable Long id) {
+        Field field = fieldService.findById(id);
+        FieldVm fieldVm = fieldMapper.toFieldVm(field);
+        return ResponseEntity.status(HttpStatus.OK).body(fieldVm);
+    }
+    @DeleteMapping("/fields/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        fieldService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
