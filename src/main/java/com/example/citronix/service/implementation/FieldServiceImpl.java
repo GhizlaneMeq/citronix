@@ -43,7 +43,18 @@ public class FieldServiceImpl implements FieldService {
 
     @Override
     public Field update(FieldUpdateDTO fieldUpdateDTO, Long id) {
-        return null;
+        Field existingField = fieldRepository.findById(id)
+                .orElseThrow(() -> new FieldNotFoundException("Field not found with ID: " + id));
+
+        Farm farm = farmService.findById(existingField.getFarm().getId());
+        fieldValidationHelper.validateFieldArea(farm.getId(), fieldUpdateDTO.getArea());
+        fieldValidationHelper.validateFieldCount(farm.getId());
+
+        existingField.setName(fieldUpdateDTO.getName());
+        existingField.setArea(fieldUpdateDTO.getArea());
+        existingField.setFarm(farm);
+
+        return fieldRepository.save(existingField);
     }
 
     @Override

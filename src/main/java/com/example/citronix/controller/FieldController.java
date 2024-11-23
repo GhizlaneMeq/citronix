@@ -1,6 +1,7 @@
 package com.example.citronix.controller;
 
 import com.example.citronix.dto.field.FieldCreateDTO;
+import com.example.citronix.dto.field.FieldUpdateDTO;
 import com.example.citronix.entity.Field;
 import com.example.citronix.mapper.FieldMapper;
 import com.example.citronix.service.FieldService;
@@ -36,5 +37,11 @@ public class FieldController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         fieldService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+    @PutMapping("/fields/{id}")
+    public ResponseEntity<FieldVm> update(@PathVariable Long id, @Valid @RequestBody FieldUpdateDTO fieldUpdateDTO) {
+        Field field = fieldService.update(fieldUpdateDTO,id);
+        FieldVm fieldVm = fieldMapper.toFieldVm(field);
+        return ResponseEntity.status(HttpStatus.OK).body(fieldVm);
     }
 }
