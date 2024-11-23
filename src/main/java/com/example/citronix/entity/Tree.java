@@ -1,6 +1,5 @@
 package com.example.citronix.entity;
 
-import com.example.citronix.entity.enums.TreeStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,10 +17,6 @@ public class Tree {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime plantationDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private TreeStatus status;
 
     @ManyToOne
     @JoinColumn(name = "field_id", nullable = false)
