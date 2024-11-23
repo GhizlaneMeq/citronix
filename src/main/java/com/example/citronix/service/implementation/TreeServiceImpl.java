@@ -1,6 +1,7 @@
 package com.example.citronix.service.implementation;
 
 import com.example.citronix.dto.Tree.TreeCreateDTO;
+import com.example.citronix.dto.Tree.TreeUpdateDTO;
 import com.example.citronix.entity.Field;
 import com.example.citronix.entity.Tree;
 import com.example.citronix.exception.Tree.OutOfSpaceException;
@@ -42,8 +43,11 @@ public class TreeServiceImpl implements TreeService {
     }
 
     @Override
-    public Tree update(Long id, TreeCreateDTO treeUpdateDto) {
-        return null;
+    public Tree update(Long id, TreeUpdateDTO treeUpdateDto) {
+        Tree existingTree = findById(id);
+        Tree updateTree = treeMapper.partialUpdate(treeUpdateDto, existingTree);
+        updateTree.setField(existingTree.getField());
+        return treeRepository.save(updateTree);
     }
 
     @Override
