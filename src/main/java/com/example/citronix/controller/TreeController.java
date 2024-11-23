@@ -37,4 +37,10 @@ public class TreeController {
         TreeVm response = treeMapper.toTreeVm(updatedTree);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+    @GetMapping("/trees/{id}")
+    public ResponseEntity<TreeVm> findById(@PathVariable Long id) {
+        Tree tree = treeService.findById(id);
+        TreeVm response = treeMapper.toTreeVm(tree);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

@@ -5,6 +5,7 @@ import com.example.citronix.dto.Tree.TreeUpdateDTO;
 import com.example.citronix.entity.Field;
 import com.example.citronix.entity.Tree;
 import com.example.citronix.exception.Tree.OutOfSpaceException;
+import com.example.citronix.exception.Tree.TreeNotFoundException;
 import com.example.citronix.mapper.TreeMapper;
 import com.example.citronix.repository.TreeRepository;
 import com.example.citronix.service.FieldService;
@@ -52,6 +53,7 @@ public class TreeServiceImpl implements TreeService {
 
     @Override
     public Tree findById(Long id) {
-        return null;
+         return treeRepository.findById(id)
+                 .orElseThrow(() -> new TreeNotFoundException("Tree with id : " + id + " not found"));
     }
 }
