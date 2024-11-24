@@ -24,8 +24,11 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public Sale save(SaleCreateDTO saleCreateDTO) {
         Harvest harvest = harvestService.findById(saleCreateDTO.getHarvestId());
-
-        return null;
+        validateQuantity(saleCreateDTO.getQuantity(), harvest);
+        Sale sale = saleMapper.toSale(saleCreateDTO);
+        sale.setRevenue(sale.getQuantity() * sale.getUnitPrice());
+        sale.setHarvest(harvest);
+        return saleRepository.save(sale);
     }
 
     @Override
