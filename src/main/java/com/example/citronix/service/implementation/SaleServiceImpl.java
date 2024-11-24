@@ -4,6 +4,7 @@ import com.example.citronix.dto.Sale.SaleCreateDTO;
 import com.example.citronix.dto.Sale.SaleUpdateDTO;
 import com.example.citronix.entity.Harvest;
 import com.example.citronix.entity.Sale;
+import com.example.citronix.exception.Sale.SaleNotFoundException;
 import com.example.citronix.mapper.SaleMapper;
 import com.example.citronix.repository.SaleRepository;
 import com.example.citronix.service.HarvestService;
@@ -33,7 +34,8 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public Sale findById(Long id) {
-        return null;
+        return saleRepository.findById(id)
+                .orElseThrow(()->new SaleNotFoundException("sale with id : " + id + "not found")) ;
     }
 
     @Override
@@ -43,7 +45,8 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public void delete(Long id) {
-
+        Sale sale = findById(id);
+        saleRepository.delete(sale);
     }
 
     @Override

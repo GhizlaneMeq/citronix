@@ -9,10 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/vi")
@@ -27,5 +24,12 @@ public class SaleController {
         Sale sale = saleService.save(saleCreateDTO);
         SaleVm response = saleMapper.toSaleVm(sale);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/sales/{id}")
+    public ResponseEntity<SaleVm> findById(@PathVariable Long id) {
+        Sale sale = saleService.findById(id);
+        SaleVm response = saleMapper.toSaleVm(sale);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
