@@ -13,6 +13,10 @@ import com.example.citronix.service.TreeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class TreeServiceImpl implements TreeService {
@@ -76,6 +80,18 @@ public class TreeServiceImpl implements TreeService {
         } else {
             return 0.0;
         }
+    }
+
+
+    @Override
+    public List<Tree> productiveTreesByField(Field field) {
+        if (field == null) {
+            throw new IllegalArgumentException("Field cannot be null");
+        }
+
+        LocalDateTime twentyYearsAgo = LocalDateTime.now().minusYears(20);
+
+        return treeRepository.findByFieldAndPlantationDateAfter(field, twentyYearsAgo);
     }
 
 }

@@ -4,17 +4,20 @@ import com.example.citronix.dto.harvest.HarvestCreateDTO;
 import com.example.citronix.dto.harvest.HarvestUpdateDTO;
 import com.example.citronix.entity.Field;
 import com.example.citronix.entity.Harvest;
+import com.example.citronix.entity.Tree;
 import com.example.citronix.entity.enums.Season;
 import com.example.citronix.mapper.HarvestMapper;
 import com.example.citronix.repository.HarvestRepository;
 import com.example.citronix.service.FieldService;
 import com.example.citronix.service.HarvestDetailsService;
 import com.example.citronix.service.HarvestService;
+import com.example.citronix.service.TreeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -23,6 +26,7 @@ public class HarvestServiceImpl implements HarvestService {
     private HarvestRepository harvestRepository;
     private HarvestMapper harvestMapper;
     private final FieldService fieldService;
+    private final TreeService treeService;
 
     @Transactional
     @Override
@@ -34,6 +38,7 @@ public class HarvestServiceImpl implements HarvestService {
             throw new IllegalArgumentException("A harvest already exists for this field in the " + season + " season of " + year);
         }
         Harvest harvest = harvestMapper.toHarvest(harvestCreateDTO);
+
 
         return null;
     }
@@ -77,5 +82,12 @@ public class HarvestServiceImpl implements HarvestService {
 
         throw new IllegalStateException("Invalid date provided: " + harvestDate); // Safety fallback
     }
+
+    private double calculateTotalProductivity(List<Tree> trees){
+        return trees.stream()
+               .mapToDouble(treeService::calculateTreeProductivity)
+               .sum();
+    }
+
 
 }
