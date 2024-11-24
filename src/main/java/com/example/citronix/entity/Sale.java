@@ -7,22 +7,28 @@ import java.time.LocalDateTime;
 
 @Entity
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class Sale {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
+
     private LocalDateTime date;
-    private Double unitPrice;
-    private Double quantity;
+    private double unitPrice;
+    private double quantity;
     private String client;
-    private double revenue;
+    private double Revenue;
 
     @ManyToOne
-    @JoinColumn(name="harvest_id", nullable = false )
+    @JoinColumn(name = "harvest_id", nullable = false)
     private Harvest harvest;
+
+    @PrePersist
+    public void prePersist() {
+        this.date = LocalDateTime.now();
+    }
 }
