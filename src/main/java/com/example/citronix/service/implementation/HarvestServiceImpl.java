@@ -65,9 +65,27 @@ public class HarvestServiceImpl implements HarvestService {
         harvestRepository.delete(harvest);
     }
 
+    @Transactional
     @Override
     public Harvest update(Long id, HarvestUpdateDTO harvestUpdateDTO) {
-        return null;
+        Harvest harvest = findById(id);
+        LocalDateTime newHarvestDate = harvestUpdateDTO.getHarvestDate();
+        Season newSeason = determineSeason(newHarvestDate);
+        Field field = harvest.getHarvestDetails().stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Harvest has no associated trees"))
+                .getTree()
+                .getField();
+
+        int newYear = newHarvestDate.getYear();
+        if (harvestRepository.existsByFieldAndSeasonAndHarvestDateYear(field, newSeason, newYear)) {
+            throw new IllegalArgumentException(
+                    "A harvest already exists for this field in the " + newSeason + " season of " + newYear);
+        }
+        harvest.setHarvestDate(newHarvestDate);
+        harvest.setSeason(newSeason);
+
+        return harvestRepository.save(harvest);
     }
 
 
