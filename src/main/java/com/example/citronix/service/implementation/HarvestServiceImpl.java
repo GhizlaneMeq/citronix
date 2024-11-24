@@ -7,6 +7,7 @@ import com.example.citronix.entity.Harvest;
 import com.example.citronix.entity.HarvestDetails;
 import com.example.citronix.entity.Tree;
 import com.example.citronix.entity.enums.Season;
+import com.example.citronix.exception.Harvest.HarvestNotFoundException;
 import com.example.citronix.mapper.HarvestMapper;
 import com.example.citronix.repository.HarvestRepository;
 import com.example.citronix.service.FieldService;
@@ -54,17 +55,37 @@ public class HarvestServiceImpl implements HarvestService {
 
     @Override
     public Harvest findById(Long id) {
-        return null;
+        return harvestRepository.findById(id)
+                .orElseThrow(() -> new HarvestNotFoundException("harvest not found"));
     }
 
     @Override
     public void delete(Long id) {
-
+        Harvest harvest = findById(id);
+        harvestRepository.delete(harvest);
     }
 
+    @Transactional
     @Override
     public Harvest update(Long id, HarvestUpdateDTO harvestUpdateDTO) {
-        return null;
+        Harvest harvest = findById(id);
+        LocalDateTime newHarvestDate = harvestUpdateDTO.getHarvestDate();
+        Season newSeason = determineSeason(newHarvestDate);
+        Field field = harvest.getHarvestDetails().stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Harvest has no associated trees"))
+                .getTree()
+                .getField();
+
+        int newYear = newHarvestDate.getYear();
+        if (harvestRepository.existsByFieldAndSeasonAndHarvestDateYear(field, newSeason, newYear)) {
+            throw new IllegalArgumentException(
+                    "A harvest already exists for this field in the " + newSeason + " season of " + newYear);
+        }
+        harvest.setHarvestDate(newHarvestDate);
+        harvest.setSeason(newSeason);
+
+        return harvestRepository.save(harvest);
     }
 
 
