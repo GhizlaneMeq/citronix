@@ -9,4 +9,5 @@ public interface TreeService {
     void delete(Long id);
     Tree update(Long id, TreeUpdateDTO treeUpdateDto);
     Tree findById(Long id);
+    double calculateTreeProductivity(Tree tree);
 }

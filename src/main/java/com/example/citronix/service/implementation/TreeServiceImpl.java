@@ -56,4 +56,26 @@ public class TreeServiceImpl implements TreeService {
          return treeRepository.findById(id)
                  .orElseThrow(() -> new TreeNotFoundException("Tree with id : " + id + " not found"));
     }
+
+    @Override
+    public double calculateTreeProductivity(Tree tree) {
+        if (tree == null || tree.getPlantationDate() == null) {
+            throw new IllegalArgumentException("Tree or plantation date cannot be null");
+        }
+
+        int currentYear = java.time.Year.now().getValue();
+        int plantationYear = tree.getPlantationDate().getYear();
+        int treeAge = currentYear - plantationYear;
+
+        if (treeAge < 3) {
+            return 2.5;
+        } else if (treeAge >= 3 && treeAge <= 10) {
+            return 12.0;
+        } else if (treeAge > 10 && treeAge <= 20) {
+            return 20.0;
+        } else {
+            return 0.0;
+        }
+    }
+
 }
