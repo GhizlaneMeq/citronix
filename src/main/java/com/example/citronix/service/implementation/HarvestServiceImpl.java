@@ -28,6 +28,12 @@ public class HarvestServiceImpl implements HarvestService {
     @Override
     public Harvest save(HarvestCreateDTO harvestCreateDTO) {
         Field field = fieldService.findById(harvestCreateDTO.getFieldId()) ;
+        Season season= determineSeason(harvestCreateDTO.getHarvestDate());
+        int year = harvestCreateDTO.getHarvestDate().getYear();
+        if(harvestRepository.existsByFieldAndSeasonAndHarvestDateYear(field, season, year)){
+            throw new IllegalArgumentException("A harvest already exists for this field in the " + season + " season of " + year);
+        }
+        Harvest harvest = harvestMapper.toHarvest(harvestCreateDTO);
 
         return null;
     }
