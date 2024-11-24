@@ -7,6 +7,7 @@ import com.example.citronix.entity.Harvest;
 import com.example.citronix.entity.HarvestDetails;
 import com.example.citronix.entity.Tree;
 import com.example.citronix.entity.enums.Season;
+import com.example.citronix.exception.Harvest.HarvestNotFoundException;
 import com.example.citronix.mapper.HarvestMapper;
 import com.example.citronix.repository.HarvestRepository;
 import com.example.citronix.service.FieldService;
@@ -54,12 +55,14 @@ public class HarvestServiceImpl implements HarvestService {
 
     @Override
     public Harvest findById(Long id) {
-        return null;
+        return harvestRepository.findById(id)
+                .orElseThrow(() -> new HarvestNotFoundException("harvest not found"));
     }
 
     @Override
     public void delete(Long id) {
-
+        Harvest harvest = findById(id);
+        harvestRepository.delete(harvest);
     }
 
     @Override
