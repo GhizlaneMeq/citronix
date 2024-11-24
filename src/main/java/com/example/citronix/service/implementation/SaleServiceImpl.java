@@ -51,7 +51,13 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public Page<Sale> findAll(Pageable pageable) {
-        return null;
+        return saleRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Sale> findAllByHarvest(Long id) {
+        Harvest harvest = harvestService.findById(id);
+        return saleRepository.findAllByHarvest(harvest);
     }
 
 

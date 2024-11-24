@@ -14,4 +14,5 @@ public interface SaleService {
     Sale update(SaleUpdateDTO saleUpdateDTO, Long id);
     void delete(Long id);
     Page<Sale> findAll(Pageable pageable);
+    List<Sale> findAllByHarvest(Long id);
 }

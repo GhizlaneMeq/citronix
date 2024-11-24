@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/vi")
 @RequiredArgsConstructor
@@ -30,6 +32,12 @@ public class SaleController {
     public ResponseEntity<SaleVm> findById(@PathVariable Long id) {
         Sale sale = saleService.findById(id);
         SaleVm response = saleMapper.toSaleVm(sale);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+    @GetMapping("/sales/harvest")
+    public ResponseEntity<List<SaleVm>> getSalesByHarvest(@RequestParam Long harvestId) {
+        List<Sale> sales = saleService.findAllByHarvest(harvestId);
+        List<SaleVm> response = sales.stream().map(saleMapper::toSaleVm).toList();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
