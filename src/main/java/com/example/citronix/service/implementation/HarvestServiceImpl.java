@@ -48,10 +48,8 @@ public class HarvestServiceImpl implements HarvestService {
         harvest = harvestRepository.save(harvest);
         List<HarvestDetails> harvestDetails = addAllHarvestDetails(harvest, trees);
 
-
-
-
-        return null;
+        harvest.setHarvestDetails(harvestDetails);
+        return harvest;
     }
 
     @Override
