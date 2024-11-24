@@ -4,6 +4,7 @@ import com.example.citronix.dto.harvest.HarvestCreateDTO;
 import com.example.citronix.dto.harvest.HarvestUpdateDTO;
 import com.example.citronix.entity.Field;
 import com.example.citronix.entity.Harvest;
+import com.example.citronix.entity.HarvestDetails;
 import com.example.citronix.entity.Tree;
 import com.example.citronix.entity.enums.Season;
 import com.example.citronix.mapper.HarvestMapper;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -38,9 +40,16 @@ public class HarvestServiceImpl implements HarvestService {
             throw new IllegalArgumentException("A harvest already exists for this field in the " + season + " season of " + year);
         }
         Harvest harvest = harvestMapper.toHarvest(harvestCreateDTO);
+        List<Tree> trees = treeService.productiveTreesByField(field);
 
+        double totalQuantity = calculateTotalProductivity(trees);
+        harvest.setTotalQuantity(totalQuantity);
+        harvest.setSeason(season);
+        harvest = harvestRepository.save(harvest);
+        List<HarvestDetails> harvestDetails = addAllHarvestDetails(harvest, trees);
 
-        return null;
+        harvest.setHarvestDetails(harvestDetails);
+        return harvest;
     }
 
     @Override
@@ -87,6 +96,19 @@ public class HarvestServiceImpl implements HarvestService {
         return trees.stream()
                .mapToDouble(treeService::calculateTreeProductivity)
                .sum();
+    }
+    private List<HarvestDetails> addAllHarvestDetails(Harvest harvest, List<Tree> trees){
+        List<HarvestDetails> harvestDetails = new ArrayList<>();
+        for (Tree tree : trees) {
+            HarvestDetails harvestDetail = HarvestDetails.builder()
+                    .harvest(harvest)
+                    .tree(tree)
+                    .quantity(treeService.calculateTreeProductivity(tree))
+                    .build();
+            harvestDetails.add(harvestDetail);
+        }
+        harvestDetailsService.createAll(harvestDetails);
+        return harvestDetails;
     }
 
 

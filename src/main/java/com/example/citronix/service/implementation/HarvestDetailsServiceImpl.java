@@ -6,6 +6,8 @@ import com.example.citronix.service.HarvestDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class HarvestDetailsServiceImpl implements HarvestDetailsService {
@@ -14,5 +16,10 @@ public class HarvestDetailsServiceImpl implements HarvestDetailsService {
     @Override
     public HarvestDetails save(HarvestDetails harvestDetails) {
         return harvestDetailsRepository.save(harvestDetails);
+    }
+
+    @Override
+    public void createAll(List<HarvestDetails> harvestDetails) {
+        harvestDetailsRepository.saveAll(harvestDetails);
     }
 }
