@@ -40,7 +40,17 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public Sale update(SaleUpdateDTO saleUpdateDTO, Long id) {
-        return null;
+        Sale existingSale = findById(id);
+        Harvest harvest = existingSale.getHarvest();
+        double additionalQuantity = saleUpdateDTO.getQuantity() - existingSale.getQuantity();
+
+        if (additionalQuantity > 0) {
+            validateQuantity(additionalQuantity, harvest);
+        }
+
+        existingSale = saleMapper.partialUpdate(saleUpdateDTO, existingSale);
+        existingSale.setRevenue(existingSale.getQuantity() * saleUpdateDTO.getUnitPrice());
+        return saleRepository.save(existingSale);
     }
 
     @Override
